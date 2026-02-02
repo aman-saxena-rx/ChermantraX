@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- VARIABLES ---
-    let lastScreen = null; // History
-    let controlsTimeout;   // Timer for auto-hiding controls
+    let lastScreen = null; 
+    let controlsTimeout;   
+    let isControlsVisible = true;
 
     // Screens
     const loginForm = document.getElementById('login-form');
@@ -26,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const imageViewer = document.getElementById('image-viewer');
     const playerHeader = document.getElementById('player-header');
     const playerTitle = document.getElementById('player-title');
+    const mediaContent = document.querySelector('.media-content');
 
     // --- 1. AUTH LOGIC ---
     const isLoggedIn = localStorage.getItem('isLoggedIn');
@@ -84,13 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = document.createElement('button');
             btn.className = 'playlist-btn';
             
-            let icon = '📄';
+            let icon = '📁';
             if(file.type.startsWith('video')) icon = '🎬';
             if(file.type.startsWith('audio')) icon = '🎵';
             if(file.type.startsWith('image')) icon = '🖼️';
             
             btn.innerHTML = `<span style="margin-right:15px; font-size:20px;">${icon}</span> ${file.name}`;
-            // Pass file name as title
             btn.onclick = () => openPlayer(file, file.name);
             playlistItems.appendChild(btn);
         });
@@ -127,7 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
             title.className = 'movie-title';
             title.innerText = movie.name;
 
-            // Pass Movie Name to Player
             card.onclick = () => {
                 if(movie.link) playStream(movie.link, movie.name);
                 else alert("No video link for: " + movie.name);
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 4. PLAYER LOGIC (Netflix Style) ---
+    // --- 4. PLAYER LOGIC (Netflix Mobile Style) ---
 
     // A. Open Local File
     function openPlayer(file, title = "Unknown File") {
@@ -158,31 +158,36 @@ document.addEventListener('DOMContentLoaded', () => {
         if(lastScreen) lastScreen.classList.remove('visible');
         playerScreen.classList.add('visible');
 
-        // Set Title
         playerTitle.innerText = title;
 
-        // Reset Players
         videoPlayer.classList.add('media-hidden');
         audioPlayer.classList.add('media-hidden');
         imageViewer.classList.add('media-hidden');
         videoPlayer.pause();
         audioPlayer.pause();
 
+        // Reveal Header initially
+        showControls();
+
         if (type.startsWith('video/') || type.includes('mp4')) {
             videoPlayer.src = src;
             videoPlayer.classList.remove('media-hidden');
             videoPlayer.play();
-            // Start Auto-Hide Logic
             startControlsTimer();
         } 
         else if (type.startsWith('audio/')) {
             audioPlayer.src = src;
             audioPlayer.classList.remove('media-hidden');
             audioPlayer.play();
+            // Audio players usually keep controls visible
+            playerHeader.classList.remove('fade-out');
+            clearTimeout(controlsTimeout);
         } 
         else if (type.startsWith('image/')) {
             imageViewer.src = src;
             imageViewer.classList.remove('media-hidden');
+            // Images keep controls visible initially but can toggle
+            startControlsTimer();
         }
     }
 
@@ -190,37 +195,62 @@ document.addEventListener('DOMContentLoaded', () => {
     window.closePlayer = function() {
         playerScreen.classList.remove('visible');
         videoPlayer.pause();
-        videoPlayer.src = ""; // Stop buffering
+        videoPlayer.src = ""; 
+        audioPlayer.pause();
         
-        // Return to Previous Screen
         if (lastScreen) lastScreen.classList.add('visible');
         else dashboardScreen.classList.add('visible'); 
     }
 
-    // --- 5. AUTO-HIDE CONTROLS LOGIC ---
+    // --- 5. SMART CONTROLS LOGIC (Mobile Optimized) ---
     
     function showControls() {
-        playerHeader.classList.remove('fade-out'); // Show Header
-        document.body.style.cursor = 'default';    // Show Cursor
+        playerHeader.classList.remove('fade-out');
+        document.body.style.cursor = 'default';
+        isControlsVisible = true;
         
-        // Reset Timer
         clearTimeout(controlsTimeout);
-        controlsTimeout = setTimeout(() => {
-            // Hide only if video is playing
-            if (!videoPlayer.paused && !videoPlayer.ended) {
-                playerHeader.classList.add('fade-out');
-                document.body.style.cursor = 'none'; // Hide Cursor
-            }
-        }, 3000); // 3 Seconds
+        
+        // Auto-hide only if playing video
+        if (!videoPlayer.paused && !videoPlayer.ended && !videoPlayer.classList.contains('media-hidden')) {
+            controlsTimeout = setTimeout(() => {
+                hideControls();
+            }, 3000); 
+        }
+    }
+
+    function hideControls() {
+        playerHeader.classList.add('fade-out');
+        document.body.style.cursor = 'none';
+        isControlsVisible = false;
     }
 
     function startControlsTimer() {
-        showControls(); // Initial trigger
+        showControls();
     }
 
-    // Event Listeners for Interaction (Mouse & Touch)
-    playerScreen.addEventListener('mousemove', showControls);
-    playerScreen.addEventListener('touchstart', showControls);
-    playerScreen.addEventListener('click', showControls);
+    function toggleControls(e) {
+        // Don't toggle if clicking the header itself or controls
+        if (e.target.closest('.player-header') || e.target.closest('audio')) return;
 
+        if (isControlsVisible) {
+            hideControls();
+        } else {
+            showControls();
+        }
+    }
+
+    // Desktop: Mouse movement resets timer
+    playerScreen.addEventListener('mousemove', () => {
+        showControls();
+    });
+
+    // Mobile/Tablet: Tap anywhere on media content to TOGGLE
+    // We bind to mediaContent wrapper to catch clicks outside the video element too
+    mediaContent.addEventListener('click', (e) => {
+        toggleControls(e);
+    });
+
+    // Prevent double firing on touch devices if both click/touch exist
+    // Simple click handler above usually suffices for modern mobile browsers
 });
