@@ -93,11 +93,16 @@
         </div>
     </div>
 
-    <div id="player-screen" class="media-modal">
-        <img src="public/logo.png" alt="ChermantraX" class="screen-logo">
-        <button class="close-btn" onclick="closePlayer()">✕ Close</button>
+   <div id="player-screen" class="media-modal player-container">
+        
+        <div id="player-header" class="player-header">
+            <button class="icon-btn" onclick="closePlayer()">←</button>
+            <span id="player-title">Unknown Movie</span>
+            <button class="icon-btn" onclick="closePlayer()">✕</button>
+        </div>
+
         <div class="media-content">
-            <video id="video-player" controls class="media-hidden"></video>
+            <video id="video-player" controls playsinline class="media-hidden"></video>
             <audio id="audio-player" controls class="media-hidden"></audio>
             <img id="image-viewer" class="media-hidden">
         </div>
