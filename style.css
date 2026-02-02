@@ -187,144 +187,113 @@ audio { width: 80%; max-width: 600px; }
 /* --- MOBILE RESPONSIVENESS (Phones) --- */
 /* ========================================= */
 @media (max-width: 768px) {
-    /* Login Screen Adjustment */
-    .login-box {
-        width: 90%;
-        padding: 30px 20px;
-    }
-    
-    /* Dashboard Padding */
-    .dashboard-container {
-        padding: 90px 15px 20px 15px; /* Less side padding */
-    }
-
-    /* Grid Layout for Mobile: 3 Icons per Row */
-    .app-grid {
-        grid-template-columns: repeat(3, 1fr); /* Forces 3 columns */
-        gap: 15px; /* Smaller gap */
-    }
-
-    /* Shrink App Items */
-    .app-item {
-        width: auto; /* Allow auto width to fit grid */
-    }
-
-    /* Shrink Icons */
-    .app-item img {
-        width: 80px; /* Much smaller icons for mobile */
-        height: 80px;
-        border-radius: 18px;
-    }
-
-    /* Shrink Text */
-    .app-item span {
-        font-size: 12px;
-        margin-top: 8px;
-        white-space: nowrap; /* Prevent text wrapping if possible */
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-    }
-
-    /* Adjust Logo Position */
-    .screen-logo {
-        height: 35px;
-        top: 20px;
-        left: 20px;
-    }
-
-    /* Adjust Logout Button */
-    .btn-netflix-logout {
-        top: 20px;
-        right: 20px;
-        padding: 8px 12px;
-        font-size: 12px;
-    }
-
-    /* List Screen Header on Mobile */
-    .list-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    .list-header h2 {
-        font-size: 22px;
-    }
-    .back-btn {
-        top: 70px;
-        left: 20px;
-    }
-    .list-container {
-        margin-top: 80px;
-    }
+    .login-box { width: 90%; padding: 30px 20px; }
+    .dashboard-container { padding: 90px 15px 20px 15px; }
+    .app-grid { grid-template-columns: repeat(3, 1fr); gap: 15px; }
+    .app-item { width: auto; }
+    .app-item img { width: 80px; height: 80px; border-radius: 18px; }
+    .app-item span { font-size: 12px; margin-top: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+    .screen-logo { height: 35px; top: 20px; left: 20px; }
+    .btn-netflix-logout { top: 20px; right: 20px; padding: 8px 12px; font-size: 12px; }
+    .list-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .list-header h2 { font-size: 22px; }
+    .back-btn { top: 70px; left: 20px; }
+    .list-container { margin-top: 80px; }
 }
 
 /* --- MOVIES SCREEN STYLES (Netflix Theme) --- */
+
+/* 1. THE GRID CONTAINER */
 .movies-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Adaptive columns */
-    gap: 20px;
-    padding: 20px 0;
+    /* Adaptive columns: At least 150px wide, sharing space equally */
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+    gap: 40px 20px; /* 40px gap between rows (vertical), 20px gap between columns (horizontal) */
+    padding: 20px 10px;
     width: 100%;
+    
+    /* Scrolling Settings */
+    overflow-y: auto;  
+    flex-grow: 1;      
+    max-height: 100%;  
+    min-height: 0;
 }
 
+/* Custom Red Scrollbar */
+.movies-grid::-webkit-scrollbar { width: 8px; }
+.movies-grid::-webkit-scrollbar-track { background: transparent; }
+.movies-grid::-webkit-scrollbar-thumb { background-color: #e50914; border-radius: 10px; }
+
+/* 2. THE MOVIE CARD (Container for Image + Title) */
 .movie-card {
     position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* Stack Image on top of Title */
     cursor: pointer;
     transition: transform 0.3s ease, z-index 0.3s;
-    border-radius: 4px;
-    overflow: hidden;
+    
+    /* REMOVED: aspect-ratio and overflow:hidden from here so Title doesn't get cut off */
 }
 
+/* Hover Effect: Scale up the whole card */
 .movie-card:hover {
-    transform: scale(1.1); /* Pop out effect */
-    z-index: 10;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+    transform: scale(1.1);
+    z-index: 100; /* Ensure it pops over everything */
 }
 
+/* 3. THE IMAGE (The Poster Itself) */
 .movie-card img {
     width: 100%;
-    height: 240px; /* Standard poster height */
+    /* Apply Aspect Ratio HERE (Standard Poster Size) */
+    aspect-ratio: 2 / 3; 
     object-fit: cover;
     border-radius: 4px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5); /* Shadow on the poster, not the whole card */
 }
 
+/* 4. THE TITLE */
 .movie-title {
     display: block;
     text-align: center;
-    margin-top: 8px;
+    margin-top: 10px;
     font-size: 14px;
     color: #ccc;
     font-weight: 500;
+    line-height: 1.2;
+    
+    /* Prevent title from overlapping if it's too long */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; 
 }
 
+/* 5. PLAY ICON OVERLAY */
 .play-icon {
     position: absolute;
-    top: 50%;
+    /* Center it relative to the IMAGE, not the whole card */
+    top: 40%; 
     left: 50%;
     transform: translate(-50%, -50%);
+    
     font-size: 40px;
     color: white;
-    opacity: 0; /* Hidden by default */
+    opacity: 0;
     transition: opacity 0.2s;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    pointer-events: none; /* Let clicks pass through to the card */
 }
 
-.movie-card:hover .play-icon {
-    opacity: 1; /* Show on hover */
-}
+.movie-card:hover .play-icon { opacity: 1; }
+.movie-card:hover .movie-title { color: white; }
 
-.movie-card:hover .movie-title {
-    color: white;
-}
-
-/* Mobile Adjustments for Movies */
+/* Mobile Adjustments */
 @media (max-width: 768px) {
     .movies-grid {
-        grid-template-columns: repeat(3, 1fr); /* 3 Posters per row on mobile */
-        gap: 10px;
+        grid-template-columns: repeat(3, 1fr); /* 3 Columns on phone */
+        gap: 15px; /* Smaller gap */
     }
-    .movie-card img {
-        height: 160px; /* Smaller posters */
+    .movie-title {
+        font-size: 11px; /* Smaller text */
     }
 }

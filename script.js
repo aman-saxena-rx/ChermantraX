@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- VARIABLES ---
-    let lastScreen = null; // Remembers where we came from (My Files or Movies)
+    let lastScreen = null; // Remembers navigation history
 
-    // Screens & Inputs
+    // DOM Elements
     const loginForm = document.getElementById('login-form');
     const loginScreen = document.getElementById('login-screen');
     const dashboardScreen = document.getElementById('dashboard-screen');
@@ -15,9 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const moviesScreen = document.getElementById('movies-screen');
     const playerScreen = document.getElementById('player-screen');
 
-    // Content Elements
+    // Content Areas
     const playlistItems = document.getElementById('playlist-items');
     const moviesGrid = document.querySelector('.movies-grid');
+    
+    // Player Elements
     const videoPlayer = document.getElementById('video-player');
     const audioPlayer = document.getElementById('audio-player');
     const imageViewer = document.getElementById('image-viewer');
@@ -52,11 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (url) window.location.href = url;
     }
 
-    // --- 2. MY FILES APP LOGIC ---
-
+    // --- 2. MY FILES LOGIC ---
     window.openMyFilesApp = function() {
         listScreen.classList.add('visible');
-        lastScreen = listScreen; // Remember we are in My Files
+        lastScreen = listScreen; 
     }
 
     window.closeListScreen = function() {
@@ -71,16 +72,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if(folderInput) { folderInput.value = ''; folderInput.click(); }
     }
 
-    // --- 3. FILE HANDLING ---
-
     window.handleFileSelect = function(input) {
-        const files = Array.from(input.files);
-        addToPlaylist(files);
+        addToPlaylist(Array.from(input.files));
     }
 
     window.handleFolderSelect = function(input) {
-        const files = Array.from(input.files);
-        addToPlaylist(files);
+        addToPlaylist(Array.from(input.files));
     }
 
     function addToPlaylist(files) {
@@ -102,29 +99,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = document.createElement('button');
             btn.className = 'playlist-btn';
             
-            // Fixed Icons
+            // Clean Icons
             let icon = '📄';
             if(file.type.startsWith('video')) icon = '🎬';
             if(file.type.startsWith('audio')) icon = '🎵';
             if(file.type.startsWith('image')) icon = '🖼️';
             
             btn.innerHTML = `<span style="margin-right:15px; font-size:20px;">${icon}</span> ${file.name}`;
-            
-            btn.onclick = () => {
-                openPlayer(file);
-            };
-            
+            btn.onclick = () => openPlayer(file);
             playlistItems.appendChild(btn);
         });
     }
 
-    // --- 4. MOVIES APP LOGIC ---
-
+    // --- 3. MOVIES APP LOGIC ---
     window.openMovies = function() {
         moviesScreen.classList.add('visible');
-        lastScreen = moviesScreen; // Remember we are in Movies
+        lastScreen = moviesScreen;
         
-        // Build grid if empty
+        // Only build the grid if it's empty
         if(moviesGrid && moviesGrid.children.length === 0) {
             renderMovies();
         }
@@ -136,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderMovies() {
         if(typeof movieData === 'undefined') {
-            console.error("movies.js not loaded!");
+            console.error("movies.js not loaded! Check your index.html");
             return;
         }
 
@@ -149,11 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const img = document.createElement('img');
             img.src = movie.poster;
             img.alt = movie.name;
+            // Fallback image if poster fails
             img.onerror = function() { this.src = 'https://via.placeholder.com/300x450?text=No+Poster'; };
 
             const playIcon = document.createElement('div');
             playIcon.className = 'play-icon';
-            playIcon.innerHTML = '▶';
+            playIcon.innerHTML = '▶'; // Fixed corrupted character
 
             const title = document.createElement('span');
             title.className = 'movie-title';
@@ -174,8 +167,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 5. PLAYER LOGIC ---
-
+    // --- 4. PLAYER LOGIC ---
+    
     // Play Local File
     function openPlayer(file) {
         const fileURL = URL.createObjectURL(file);
@@ -189,12 +182,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Unified Play Function
     function playContent(src, type) {
-        // Hide current screen
+        // Hide previous screen
         if(lastScreen) lastScreen.classList.remove('visible');
         
         playerScreen.classList.add('visible');
 
-        // Reset
+        // Reset Players
         videoPlayer.classList.add('media-hidden');
         audioPlayer.classList.add('media-hidden');
         imageViewer.classList.add('media-hidden');
@@ -217,12 +210,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Close Player & Return
+    // Close Player
     window.closePlayer = function() {
         playerScreen.classList.remove('visible');
-        
         videoPlayer.pause();
-        audioPlayer.pause();
         videoPlayer.src = "";
         
         // Return to where we came from
@@ -232,5 +223,4 @@ document.addEventListener('DOMContentLoaded', () => {
             dashboardScreen.classList.add('visible'); 
         }
     }
-
 });

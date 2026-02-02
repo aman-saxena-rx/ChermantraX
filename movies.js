@@ -29,8 +29,6 @@ const movieData = [
         poster: "https://upload.wikimedia.org/wikipedia/en/2/2e/Inception_%282010%29_theatrical_poster.jpg",
         link: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
     },
-    // ... Adding more to reach 50 (Repeated for demonstration)
-    // You can simply copy-paste the block below to add more movies.
     { name: "Fight Club", poster: "https://via.placeholder.com/300x450?text=Fight+Club", link: "" },
     { name: "Forrest Gump", poster: "https://via.placeholder.com/300x450?text=Forrest+Gump", link: "" },
     { name: "The Matrix", poster: "https://via.placeholder.com/300x450?text=The+Matrix", link: "" },
@@ -74,11 +72,11 @@ const movieData = [
     { name: "Frozen", poster: "https://via.placeholder.com/300x450?text=Frozen", link: "" },
     { name: "Moana", poster: "https://via.placeholder.com/300x450?text=Moana", link: "" },
     { name: "Zootopia", poster: "https://via.placeholder.com/300x450?text=Zootopia", link: "" },
-    { name: "Inside Out", poster: "https://via.placeholder.com/300x450?text=Inside+Out", link: "" },
+    { name: "Inside Out", poster: "https://upload.wikimedia.org/wikipedia/en/8/81/ShawshankRedemptionMoviePoster.jpg", link: "" },
     { name: "Up", poster: "https://via.placeholder.com/300x450?text=Up", link: "" },
     { name: "Ratatouille", poster: "https://via.placeholder.com/300x450?text=Ratatouille", link: "" },
     { name: "Finding Nemo", poster: "https://via.placeholder.com/300x450?text=Finding+Nemo", link: "" },
     { name: "The Incredibles", poster: "https://via.placeholder.com/300x450?text=The+Incredibles", link: "" },
     { name: "Iron Man", poster: "https://via.placeholder.com/300x450?text=Iron+Man", link: "" },
-    { name: "Thor", poster: "https://via.placeholder.com/300x450?text=Thor", link: "" }
+    { name: "Thor", poster: "https://upload.wikimedia.org/wikipedia/en/8/81/ShawshankRedemptionMoviePoster.jpg", link: "" }
 ];
