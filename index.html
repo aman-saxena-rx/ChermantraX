@@ -66,7 +66,9 @@
 
     <div id="list-screen" class="media-modal">
         <img src="public/logo.png" alt="ChermantraX" class="screen-logo">
+        
         <button class="back-btn" onclick="closeListScreen()">‹ Back</button>
+        
         <div class="list-container">
             <div class="list-header">
                 <h2>My Playlist</h2>
@@ -75,25 +77,14 @@
                     <button class="action-btn" onclick="triggerFolder()">+ Add Folder</button>
                 </div>
             </div>
+            
             <div id="playlist-items">
                 <div class="empty-state">No files selected. Click "+ Add" above.</div>
             </div>
         </div>
     </div>
 
-    <div id="movies-screen" class="media-modal" style="background: #141414;"> 
-        <img src="public/logo.png" alt="ChermantraX" class="screen-logo">
-        <button class="back-btn" onclick="closeMovies()">‹ Back</button>
-        
-        <div class="list-container" style="max-width: 1200px;">
-            <div class="list-header" style="border-bottom: none; margin-bottom: 10px;">
-                <h2 style="font-size: 32px; font-weight: 800; color: #e50914;">Trending Now</h2>
-            </div>
-            <div class="movies-grid"></div>
-        </div>
-    </div>
-
-   <div id="player-screen" class="media-modal player-container">
+    <div id="player-screen" class="media-modal player-container">
         
         <div id="player-header" class="player-header">
             <button class="icon-btn" onclick="closePlayer()">←</button>
@@ -105,6 +96,19 @@
             <video id="video-player" controls playsinline class="media-hidden"></video>
             <audio id="audio-player" controls class="media-hidden"></audio>
             <img id="image-viewer" class="media-hidden">
+        </div>
+    </div>
+
+    <div id="movies-screen" class="media-modal" style="background: #141414;"> 
+        <img src="public/logo.png" alt="ChermantraX" class="screen-logo">
+        <button class="back-btn" onclick="closeMovies()">‹ Back</button>
+        
+        <div class="list-container">
+            <div class="list-header" style="border-bottom: none; margin-bottom: 10px;">
+                <h2 style="font-size: 32px; font-weight: 800; color: #e50914;">Trending Now</h2>
+            </div>
+            
+            <div class="movies-grid"></div>
         </div>
     </div>
 
