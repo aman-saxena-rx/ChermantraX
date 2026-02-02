@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- VARIABLES ---
+    let lastScreen = null; // Remembers where we came from (My Files or Movies)
+
     // Screens & Inputs
     const loginForm = document.getElementById('login-form');
     const loginScreen = document.getElementById('login-screen');
@@ -9,10 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Modals
     const listScreen = document.getElementById('list-screen');
+    const moviesScreen = document.getElementById('movies-screen');
     const playerScreen = document.getElementById('player-screen');
 
     // Content Elements
     const playlistItems = document.getElementById('playlist-items');
+    const moviesGrid = document.querySelector('.movies-grid');
     const videoPlayer = document.getElementById('video-player');
     const audioPlayer = document.getElementById('audio-player');
     const imageViewer = document.getElementById('image-viewer');
@@ -49,16 +54,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 2. MY FILES APP LOGIC ---
 
-    // Open the List Screen directly (No popup)
     window.openMyFilesApp = function() {
         listScreen.classList.add('visible');
+        lastScreen = listScreen; // Remember we are in My Files
     }
 
     window.closeListScreen = function() {
         listScreen.classList.remove('visible');
     }
 
-    // Trigger Hidden Inputs from the List Screen buttons
     window.triggerFile = function() {
         if(fileInput) { fileInput.value = ''; fileInput.click(); }
     }
@@ -69,19 +73,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 3. FILE HANDLING ---
 
-    // Handle File Select
     window.handleFileSelect = function(input) {
         const files = Array.from(input.files);
         addToPlaylist(files);
     }
 
-    // Handle Folder Select
     window.handleFolderSelect = function(input) {
         const files = Array.from(input.files);
         addToPlaylist(files);
     }
 
-    // Shared Function to Add Items to UI
     function addToPlaylist(files) {
         const mediaFiles = files.filter(file => 
             file.type.startsWith('video/') || 
@@ -94,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Remove "Empty State" text if it exists
         const emptyState = document.querySelector('.empty-state');
         if(emptyState) emptyState.remove();
 
@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = document.createElement('button');
             btn.className = 'playlist-btn';
             
+            // Fixed Icons
             let icon = '📄';
             if(file.type.startsWith('video')) icon = '🎬';
             if(file.type.startsWith('audio')) icon = '🎵';
@@ -117,129 +118,117 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 4. PLAYER LOGIC ---
-
-    function openPlayer(file) {
-        const fileURL = URL.createObjectURL(file);
-        const type = file.type;
-
-        // Hide List, Show Player
-        listScreen.classList.remove('visible'); 
-        playerScreen.classList.add('visible');
-
-        // Reset Players
-        videoPlayer.classList.add('media-hidden');
-        audioPlayer.classList.add('media-hidden');
-        imageViewer.classList.add('media-hidden');
-        videoPlayer.pause();
-        audioPlayer.pause();
-
-        if (type.startsWith('video/')) {
-            videoPlayer.src = fileURL;
-            videoPlayer.classList.remove('media-hidden');
-            videoPlayer.play();
-        } 
-        else if (type.startsWith('audio/')) {
-            audioPlayer.src = fileURL;
-            audioPlayer.classList.remove('media-hidden');
-            audioPlayer.play();
-        } 
-        else if (type.startsWith('image/')) {
-            imageViewer.src = fileURL;
-            imageViewer.classList.remove('media-hidden');
-        }
-    }
-
-    // Close Player -> Go back to List
-    window.closePlayer = function() {
-        playerScreen.classList.remove('visible');
-        
-        videoPlayer.pause();
-        audioPlayer.pause();
-        videoPlayer.src = "";
-        audioPlayer.src = "";
-        imageViewer.src = "";
-
-        // Return to list
-        listScreen.classList.add('visible');
-    }
-
-// --- 5. MOVIES APP LOGIC ---
-
-    const moviesScreen = document.getElementById('movies-screen');
+    // --- 4. MOVIES APP LOGIC ---
 
     window.openMovies = function() {
         moviesScreen.classList.add('visible');
+        lastScreen = moviesScreen; // Remember we are in Movies
+        
+        // Build grid if empty
+        if(moviesGrid && moviesGrid.children.length === 0) {
+            renderMovies();
+        }
     }
 
     window.closeMovies = function() {
         moviesScreen.classList.remove('visible');
     }
 
-    // Play Stream (Direct Link)
-    window.playStream = function(url) {
-        if (!url) return;
+    function renderMovies() {
+        if(typeof movieData === 'undefined') {
+            console.error("movies.js not loaded!");
+            return;
+        }
 
-        // Hide Movies Screen
-        moviesScreen.classList.remove('visible');
+        moviesGrid.innerHTML = ''; 
+
+        movieData.forEach(movie => {
+            const card = document.createElement('div');
+            card.className = 'movie-card';
+            
+            const img = document.createElement('img');
+            img.src = movie.poster;
+            img.alt = movie.name;
+            img.onerror = function() { this.src = 'https://via.placeholder.com/300x450?text=No+Poster'; };
+
+            const playIcon = document.createElement('div');
+            playIcon.className = 'play-icon';
+            playIcon.innerHTML = '▶';
+
+            const title = document.createElement('span');
+            title.className = 'movie-title';
+            title.innerText = movie.name;
+
+            card.onclick = () => {
+                if(movie.link) {
+                    playStream(movie.link);
+                } else {
+                    alert("No video link for: " + movie.name);
+                }
+            };
+
+            card.appendChild(img);
+            card.appendChild(playIcon);
+            card.appendChild(title);
+            moviesGrid.appendChild(card);
+        });
+    }
+
+    // --- 5. PLAYER LOGIC ---
+
+    // Play Local File
+    function openPlayer(file) {
+        const fileURL = URL.createObjectURL(file);
+        playContent(fileURL, file.type);
+    }
+
+    // Play URL Stream
+    window.playStream = function(url) {
+        playContent(url, 'video/mp4');
+    }
+
+    // Unified Play Function
+    function playContent(src, type) {
+        // Hide current screen
+        if(lastScreen) lastScreen.classList.remove('visible');
         
-        // Open Player Screen
         playerScreen.classList.add('visible');
 
-        // Reset & Setup Video Player
+        // Reset
         videoPlayer.classList.add('media-hidden');
         audioPlayer.classList.add('media-hidden');
         imageViewer.classList.add('media-hidden');
-        
-        videoPlayer.src = url;
-        videoPlayer.classList.remove('media-hidden');
-        videoPlayer.play();
-    }
-    
-    // Update closePlayer to ensure it unhides the correct screen?
-    // Current closePlayer logic goes back to 'listScreen'. 
-    // We should modify it slightly to handle going back to the dashboard if listScreen wasn't open.
-    // BUT for simplicity: The user will just hit "Close" and go to the list screen, 
-    // or we can make a small tweak:
+        videoPlayer.pause();
+        audioPlayer.pause();
 
-    const originalClosePlayer = window.closePlayer;
-    let lastScreen = null; // Remember where we came from
-
-    // Update Open Functions to remember screen
-    window.openMyFilesApp = function() {
-        listScreen.classList.add('visible');
-        lastScreen = listScreen;
+        if (type.startsWith('video/') || type.includes('mp4')) {
+            videoPlayer.src = src;
+            videoPlayer.classList.remove('media-hidden');
+            videoPlayer.play();
+        } 
+        else if (type.startsWith('audio/')) {
+            audioPlayer.src = src;
+            audioPlayer.classList.remove('media-hidden');
+            audioPlayer.play();
+        } 
+        else if (type.startsWith('image/')) {
+            imageViewer.src = src;
+            imageViewer.classList.remove('media-hidden');
+        }
     }
 
-    window.openMovies = function() {
-        moviesScreen.classList.add('visible');
-        lastScreen = moviesScreen;
-    }
-
-    window.playStream = function(url) {
-        if (!url) return;
-        if(lastScreen) lastScreen.classList.remove('visible'); // Hide previous
-        
-        playerScreen.classList.add('visible');
-        
-        videoPlayer.src = url;
-        videoPlayer.classList.remove('media-hidden');
-        audioPlayer.classList.add('media-hidden');
-        imageViewer.classList.add('media-hidden');
-        videoPlayer.play();
-    }
-
-    // Updated Close Player
+    // Close Player & Return
     window.closePlayer = function() {
         playerScreen.classList.remove('visible');
+        
         videoPlayer.pause();
+        audioPlayer.pause();
         videoPlayer.src = "";
         
-        // Go back to the screen we came from
+        // Return to where we came from
         if (lastScreen) {
             lastScreen.classList.add('visible');
         } else {
-            // Fallback to dashboard
             dashboardScreen.classList.add('visible'); 
         }
     }
