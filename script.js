@@ -164,4 +164,84 @@ document.addEventListener('DOMContentLoaded', () => {
         listScreen.classList.add('visible');
     }
 
+// --- 5. MOVIES APP LOGIC ---
+
+    const moviesScreen = document.getElementById('movies-screen');
+
+    window.openMovies = function() {
+        moviesScreen.classList.add('visible');
+    }
+
+    window.closeMovies = function() {
+        moviesScreen.classList.remove('visible');
+    }
+
+    // Play Stream (Direct Link)
+    window.playStream = function(url) {
+        if (!url) return;
+
+        // Hide Movies Screen
+        moviesScreen.classList.remove('visible');
+        
+        // Open Player Screen
+        playerScreen.classList.add('visible');
+
+        // Reset & Setup Video Player
+        videoPlayer.classList.add('media-hidden');
+        audioPlayer.classList.add('media-hidden');
+        imageViewer.classList.add('media-hidden');
+        
+        videoPlayer.src = url;
+        videoPlayer.classList.remove('media-hidden');
+        videoPlayer.play();
+    }
+    
+    // Update closePlayer to ensure it unhides the correct screen?
+    // Current closePlayer logic goes back to 'listScreen'. 
+    // We should modify it slightly to handle going back to the dashboard if listScreen wasn't open.
+    // BUT for simplicity: The user will just hit "Close" and go to the list screen, 
+    // or we can make a small tweak:
+
+    const originalClosePlayer = window.closePlayer;
+    let lastScreen = null; // Remember where we came from
+
+    // Update Open Functions to remember screen
+    window.openMyFilesApp = function() {
+        listScreen.classList.add('visible');
+        lastScreen = listScreen;
+    }
+
+    window.openMovies = function() {
+        moviesScreen.classList.add('visible');
+        lastScreen = moviesScreen;
+    }
+
+    window.playStream = function(url) {
+        if (!url) return;
+        if(lastScreen) lastScreen.classList.remove('visible'); // Hide previous
+        
+        playerScreen.classList.add('visible');
+        
+        videoPlayer.src = url;
+        videoPlayer.classList.remove('media-hidden');
+        audioPlayer.classList.add('media-hidden');
+        imageViewer.classList.add('media-hidden');
+        videoPlayer.play();
+    }
+
+    // Updated Close Player
+    window.closePlayer = function() {
+        playerScreen.classList.remove('visible');
+        videoPlayer.pause();
+        videoPlayer.src = "";
+        
+        // Go back to the screen we came from
+        if (lastScreen) {
+            lastScreen.classList.add('visible');
+        } else {
+            // Fallback to dashboard
+            dashboardScreen.classList.add('visible'); 
+        }
+    }
+
 });

@@ -39,7 +39,10 @@
                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Folder-front-gradient.png" alt="My Files" style="border-radius:25px;">
                 <span>My Files</span>
             </div>
-
+            <div class="app-item" onclick="openMovies()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Movies_%26_TV_films_2016.svg" alt="Top 50 Movies" style="border-radius:25px;">
+                <span>Top 50 Movies</span>
+            </div>
             <div class="app-item" onclick="openApp('https://tv.apple.com/')"><img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/AppleTVLogoBerdaiOthmaneCA.png" alt="Apple TV+" style="background:black; border-radius:25px;"><span>Apple TV+</span></div>
             <div class="app-item" onclick="openApp('https://www.youtube.com/')"><img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" alt="YouTube" style="border-radius:25px;"><span>YouTube</span></div>
             <div class="app-item" onclick="openApp('https://www.netflix.com/in/')"><img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Netflix_icon.svg" alt="Netflix" style="border-radius:25px;"><span>Netflix</span></div>
@@ -90,6 +93,44 @@
             <video id="video-player" controls class="media-hidden"></video>
             <audio id="audio-player" controls class="media-hidden"></audio>
             <img id="image-viewer" class="media-hidden">
+        </div>
+    </div>
+
+    <div id="movies-screen" class="media-modal" style="background: #141414;"> <img src="public/logo.png" alt="ChermantraX" class="screen-logo">
+        <button class="back-btn" onclick="closeMovies()">‹ Back</button>
+        
+        <div class="list-container" style="max-width: 1200px;">
+            <div class="list-header" style="border-bottom: none; margin-bottom: 10px;">
+                <h2 style="font-size: 32px; font-weight: 800; color: #e50914;">Trending Now</h2>
+            </div>
+            
+            <div class="movies-grid">
+                
+                <div class="movie-card" onclick="playStream('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/Big_buck_bunny_poster_big.jpg" alt="Big Buck Bunny">
+                    <div class="play-icon">▶</div>
+                    <span class="movie-title">Big Buck Bunny</span>
+                </div>
+
+                <div class="movie-card" onclick="playStream('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/ElephantsDreamPoster.jpg" alt="Elephant's Dream">
+                    <div class="play-icon">▶</div>
+                    <span class="movie-title">Elephant's Dream</span>
+                </div>
+
+                <div class="movie-card" onclick="playStream('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/Sintel_poster.jpg" alt="Sintel">
+                    <div class="play-icon">▶</div>
+                    <span class="movie-title">Sintel</span>
+                </div>
+
+                <div class="movie-card" onclick="playStream('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Tears_of_Steel_poster.jpg" alt="Tears of Steel">
+                    <div class="play-icon">▶</div>
+                    <span class="movie-title">Tears of Steel</span>
+                </div>
+
+                </div>
         </div>
     </div>
 
