@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChermantraX</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="login-screen" class="login-container">
+        <div class="background-overlay"></div>
+        <img src="public/logo.png" alt="ChermantraX" class="screen-logo">
+
+        <div class="login-box">
+            <h1>Sign In</h1>
+            <form id="login-form">
+                <div class="input-group">
+                    <input type="text" value="9876543210" required placeholder=" ">
+                    <label>Email or mobile number</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" value="mypassword" required placeholder=" ">
+                    <label>Password</label>
+                </div>
+                <button type="submit" class="btn-primary">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="dashboard-screen" class="dashboard-container">
+        
+        <img src="public/logo.png" alt="ChermantraX" class="screen-logo">
+        <button onclick="logout()" class="btn-netflix-logout">Sign Out</button>
+
+        <div class="app-grid">
+            
+            <div class="app-item" onclick="openMyFilesApp()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Folder-front-gradient.png" alt="My Files" style="border-radius:35px;">
+                <span>My Files</span>
+            </div>
+
+            <div class="app-item" onclick="openApp('https://tv.apple.com/')"><img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/AppleTVLogoBerdaiOthmaneCA.png" alt="Apple TV+" style="background:black; border-radius:35px;"><span>Apple TV+</span></div>
+            <div class="app-item" onclick="openApp('https://www.youtube.com/')"><img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" alt="YouTube" style="border-radius:35px;"><span>YouTube</span></div>
+            <div class="app-item" onclick="openApp('https://www.netflix.com/in/')"><img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Netflix_icon.svg" alt="Netflix" style="border-radius:35px;"><span>Netflix</span></div>
+            <div class="app-item" onclick="openApp('https://www.primevideo.com/')"><img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Amazon_Prime_Video_blue_logo_1.svg" alt="Prime Video" style="border-radius:35px;"><span>Prime Video</span></div>
+            <div class="app-item" onclick="openApp('https://www.hotstar.com/in')"><img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Disney%2B_Hotstar_logo.svg" alt="Hotstar" style="background:white; border-radius:35px;"><span>Hotstar</span></div>
+            <div class="app-item" onclick="openApp('https://www.sonyliv.com/')"><img src="https://upload.wikimedia.org/wikipedia/commons/5/58/Sony_LIV_Logo_%282020%29.png" alt="Sony LIV" style="border-radius:35px;"><span>Sony LIV</span></div>
+            <div class="app-item" onclick="openApp('https://www.zee5.com/')"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a1/Zee5_Logo_2018-2025.svg" alt="Zee5" style="background:white; border-radius:35px;"><span>Zee5</span></div>
+            <div class="app-item" onclick="openApp('https://www.jiocinema.com/')"><img src="https://upload.wikimedia.org/wikipedia/commons/1/14/Jiocinema.png" alt="JioCinema" style="border-radius:35px;"><span>JioCinema</span></div>
+            <div class="app-item" onclick="openApp('https://music.apple.com/')"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Apple_Music_icon.svg" alt="Apple Music" style="border-radius:35px;"><span>Apple Music</span></div>
+            <div class="app-item" onclick="openApp('https://open.spotify.com/')"><img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify" style="border-radius:35px;"><span>Spotify</span></div>
+            <div class="app-item" onclick="openApp('https://photos.google.com/')"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Google_Photos_%282025%29.svg" alt="Google Photos" style="border-radius:35px;"><span>Google Photos</span></div>
+            <div class="app-item" onclick="openApp('https://www.icloud.com/photos')"><img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Photos_2025_logo.jpg" alt="iCloud Photos" style="border-radius:35px;"><span>iCloud Photos</span></div>
+            <div class="app-item" onclick="openApp('https://www.icloud.com/')"><img src="https://upload.wikimedia.org/wikipedia/commons/1/1c/ICloud_logo.svg" alt="iCloud" style="border-radius:35px;"><span>iCloud</span></div>
+            <div class="app-item" onclick="openApp('https://drive.google.com/')"><img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" alt="Google Drive" style="border-radius:35px;"><span>Google Drive</span></div>
+            <div class="app-item" onclick="openApp('https://onedrive.live.com/')"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Microsoft_OneDrive_Icon_%282025_-_present%29.svg" alt="OneDrive" style="border-radius:35px;"><span>OneDrive</span></div>
+
+            <input type="file" id="fileInput" style="display: none;" multiple onchange="handleFileSelect(this)">
+            <input type="file" id="folderInput" style="display: none;" webkitdirectory directory multiple onchange="handleFolderSelect(this)">
+        </div>
+    </div>
+
+    <div id="list-screen" class="media-modal">
+        <img src="public/logo.png" alt="ChermantraX" class="screen-logo">
+        
+        <button class="back-btn" onclick="closeListScreen()">‹ Back</button>
+        
+        <div class="list-container">
+            <div class="list-header">
+                <h2>My Playlist</h2>
+                <div class="list-actions">
+                    <button class="action-btn" onclick="triggerFile()">+ Add Files</button>
+                    <button class="action-btn" onclick="triggerFolder()">+ Add Folder</button>
+                </div>
+            </div>
+            
+            <div id="playlist-items">
+                <div class="empty-state">No files selected. Click "+ Add" above.</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="player-screen" class="media-modal">
+        <img src="public/logo.png" alt="ChermantraX" class="screen-logo">
+        
+        <button class="close-btn" onclick="closePlayer()">✕ Close</button>
+        
+        <div class="media-content">
+            <video id="video-player" controls class="media-hidden"></video>
+            <audio id="audio-player" controls class="media-hidden"></audio>
+            <img id="image-viewer" class="media-hidden">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

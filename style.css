@@ -1,0 +1,260 @@
+/* GENERAL RESET */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+body { 
+    --bg-color: #000000;
+    --text-color: #ffffff;
+    --card-bg: #1c1c1e;
+    
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    height: 100vh; 
+    overflow-x: hidden;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+@media (prefers-color-scheme: light) {
+    body {
+        --bg-color: #f2f2f7;
+        --text-color: #000000;
+        --card-bg: #ffffff;
+    }
+}
+
+/* VISIBILITY CONTROLS */
+.login-container { display: flex; } 
+.dashboard-container { display: none; }
+.hidden { display: none !important; }
+.visible { display: flex !important; }
+
+/* --- UNIVERSAL SEAMLESS LOGO --- */
+.screen-logo {
+    position: absolute;
+    top: 25px;
+    left: 40px;
+    height: 50px;
+    z-index: 2000;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    pointer-events: none;
+}
+
+/* --- LOGIN SCREEN --- */
+.login-container {
+    position: relative; height: 100vh; width: 100vw;
+    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://assets.nflxext.com/ffe/siteui/vlv3/f841d4c7-10e1-40af-bcae-07a3f8dc141a/f6d7434e-d6de-4185-a6d4-c77a2d08737b/US-en-20220502-popsignuptwoweeks-perspective_alpha_website_medium.jpg');
+    background-size: cover; background-position: center;
+    justify-content: center; align-items: center;
+}
+
+.login-box {
+    background: rgba(0,0,0,0.85); padding: 60px; border-radius: 8px; width: 450px; text-align: left; color: #fff;
+}
+.login-box h1 { margin-bottom: 20px; font-size: 32px; font-weight: bold; }
+
+.input-group { position: relative; margin-bottom: 15px; }
+.input-group input {
+    width: 100%; height: 50px; background: #333; border: none; border-radius: 4px; color: #fff; padding: 15px 20px 0; font-size: 16px; outline: none;
+}
+.input-group label {
+    position: absolute; top: 15px; left: 20px; color: #8c8c8c; font-size: 16px; pointer-events: none; transition: 0.2s;
+}
+.input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: 5px; font-size: 11px; }
+
+.btn-primary {
+    width: 100%; padding: 15px; background: #e50914; color: white; border: none; 
+    border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px;
+}
+
+/* --- DASHBOARD SCREEN --- */
+.dashboard-container {
+    background-color: var(--bg-color);
+    min-height: 100vh;
+    flex-direction: column; 
+    align-items: center;
+    padding: 80px 40px 40px 40px; 
+    position: relative;
+}
+
+.btn-netflix-logout {
+    position: absolute; top: 25px; right: 40px;
+    background: #e50914; color: #fff; border: none; padding: 10px 15px;
+    border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.3); z-index: 10;
+}
+.btn-netflix-logout:hover { background: #f40612; }
+
+/* Grid Layout - Desktop Default */
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 50px;
+    width: 100%;
+    max-width: 1800px;
+    justify-items: center;
+}
+
+.app-item {
+    display: flex; flex-direction: column; align-items: center; cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s; width: 180px;
+}
+.app-item:hover { transform: scale(1.1); filter: brightness(1.1); }
+.app-item:active { transform: scale(0.95); }
+
+.app-item img {
+    width: 160px; height: 160px; object-fit: contain;
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2)); border-radius: 25px;
+}
+.app-item span {
+    margin-top: 15px; font-size: 18px; font-weight: 500; color: var(--text-color); text-align: center;
+}
+
+/* --- MODALS (App Screens) --- */
+.media-modal {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: #000;
+    z-index: 1000;
+    display: none; flex-direction: column; justify-content: center; align-items: center;
+}
+.media-modal.visible { display: flex !important; }
+.media-hidden { display: none !important; }
+
+/* --- LIST SCREEN STYLES --- */
+.list-container {
+    width: 100%; max-width: 900px; 
+    background: transparent;
+    padding: 20px; height: 80vh; display: flex; flex-direction: column;
+    margin-top: 60px;
+}
+
+.list-header {
+    display: flex; justify-content: space-between; align-items: center; 
+    margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px;
+}
+.list-header h2 { font-size: 28px; color: #fff; }
+
+.list-actions { display: flex; gap: 10px; }
+
+.action-btn {
+    background: #333; color: white; border: 1px solid #555;
+    padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 14px;
+    transition: 0.2s;
+}
+.action-btn:hover { background: #fff; color: #000; }
+
+#playlist-items {
+    overflow-y: auto; display: flex; flex-direction: column; gap: 10px; flex-grow: 1;
+}
+
+.empty-state { text-align: center; color: #666; margin-top: 50px; font-size: 18px; }
+
+.playlist-btn {
+    background: #1c1c1e; color: #fff; border: none; padding: 20px;
+    text-align: left; border-radius: 12px; cursor: pointer; font-size: 16px;
+    display: flex; align-items: center; transition: 0.2s;
+}
+.playlist-btn:hover { background: #333; transform: scale(1.01); }
+
+/* Buttons */
+.close-btn {
+    position: absolute; top: 25px; right: 40px;
+    background: rgba(255, 255, 255, 0.2); color: white; border: none;
+    padding: 10px 20px; border-radius: 30px; cursor: pointer; font-size: 16px;
+    z-index: 1001;
+}
+.close-btn:hover { background: rgba(255, 255, 255, 0.4); }
+
+.back-btn {
+    position: absolute; top: 80px; left: 40px;
+    background: transparent; color: #aaa; border: none;
+    padding: 0; cursor: pointer; font-size: 16px; font-weight: bold;
+    z-index: 1001; display: flex; align-items: center;
+}
+.back-btn:hover { color: #fff; }
+
+.media-content { 
+    width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: #000;
+}
+video, img { 
+    max-width: 100%; max-height: 100%; box-shadow: none;
+}
+audio { width: 80%; max-width: 600px; }
+
+/* ========================================= */
+/* --- MOBILE RESPONSIVENESS (Phones) --- */
+/* ========================================= */
+@media (max-width: 768px) {
+    /* Login Screen Adjustment */
+    .login-box {
+        width: 90%;
+        padding: 30px 20px;
+    }
+    
+    /* Dashboard Padding */
+    .dashboard-container {
+        padding: 90px 15px 20px 15px; /* Less side padding */
+    }
+
+    /* Grid Layout for Mobile: 3 Icons per Row */
+    .app-grid {
+        grid-template-columns: repeat(3, 1fr); /* Forces 3 columns */
+        gap: 15px; /* Smaller gap */
+    }
+
+    /* Shrink App Items */
+    .app-item {
+        width: auto; /* Allow auto width to fit grid */
+    }
+
+    /* Shrink Icons */
+    .app-item img {
+        width: 80px; /* Much smaller icons for mobile */
+        height: 80px;
+        border-radius: 18px;
+    }
+
+    /* Shrink Text */
+    .app-item span {
+        font-size: 12px;
+        margin-top: 8px;
+        white-space: nowrap; /* Prevent text wrapping if possible */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+    }
+
+    /* Adjust Logo Position */
+    .screen-logo {
+        height: 35px;
+        top: 20px;
+        left: 20px;
+    }
+
+    /* Adjust Logout Button */
+    .btn-netflix-logout {
+        top: 20px;
+        right: 20px;
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    /* List Screen Header on Mobile */
+    .list-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .list-header h2 {
+        font-size: 22px;
+    }
+    .back-btn {
+        top: 70px;
+        left: 20px;
+    }
+    .list-container {
+        margin-top: 80px;
+    }
+}
